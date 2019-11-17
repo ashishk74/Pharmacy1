@@ -24,23 +24,29 @@ struct materialMaster{
 }
     uint mmrecordno = 50000000; // Material Master Record No. starting from 50.000.000
 
-materialMaster[] MMR;
 
+mapping(uint256 => materialMaster) MMR;
 
     // create Material Master Record
 
 function mm01(string memory _partname, uint256 _partno, string memory _uom, string memory _abc, string memory _fmr) 
-public returns (uint){
-
-    partName = _partname;
-    partNo = _partno;
-    uom = _uom;
-    ABC = _abc;
-    FMR = _fmr;
+public {
+    
+    MMR[partNo].partName = _partname;
+    MMR[partNo].partNo = _partno;
+    MMR[partNo].uom = _uom;
+    MMR[partNo].ABC = _abc;
+    MMR[partNo].FMR = _fmr;
     mmrecordno++;
+    MMR[partNo].mmrecordno;
     
-    return mmrecordno;
+}
+
+// view Material Master Record 
+
+function mm03(uint256 _partno) view public returns(string memory){
     
+    return (MMR[_partno].partName);
 }
 
 }
