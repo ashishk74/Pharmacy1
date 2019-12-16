@@ -5,7 +5,8 @@ contract Pharmacy1 {
     address admin;
     
 constructor () public {
-        admin = msg.sender
+        admin = msg.sender;
+        
     }
 
 struct materialMaster{
@@ -16,7 +17,7 @@ struct materialMaster{
     string FMR; // Class of quantity moving , Fast / Medium / Slow
     uint mmrecordno; // Material Master Record No.
 
-    }
+}
     uint mmrecordno = 50000000; // Material Master Record No. starting from 50.000.000
 
 mapping(uint256 => materialMaster) MMR;
@@ -25,7 +26,7 @@ uint[] partnos;
     // create Material Master Record
 
 function mm01(string memory _partname, uint256 _partno, string memory _uom, string memory _abc, string memory _fmr)
-public returns (bool){
+public returns (uint256){
 
     mmrecordno++;
     
@@ -33,8 +34,8 @@ public returns (bool){
     
     partnos.push(_partno);
     
-    return true;
-    }
+    return mmrecordno;
+}
 
 // edit Material Master Record
 
@@ -44,7 +45,7 @@ public returns (bool){
     MMR[_partno] = materialMaster(_partname, _partno, _uom, _abc, _fmr, mmrecordno);
     
     return true;
-    }
+}
 
 // view Material Master Record
 
@@ -52,7 +53,7 @@ function mm03(uint _partno) external view returns(string memory, string memory, 
     
 
     return (MMR[_partno].partName, MMR[_partno].uom, MMR[_partno].ABC, MMR[_partno].FMR, MMR[_partno].mmrecordno);
-    }
+}
 
 struct vendorMaster{
     string vendorName;
@@ -61,7 +62,7 @@ struct vendorMaster{
     string vendorAddress;    //contact person , phone no , postal address
     address vendorWallet; // to transfer token against purchase
 
-    }
+}
     uint vendorcode = 10000; // Vendor Master Record No. starting from 10.000
 
 mapping(string => vendorMaster) VMR;
@@ -70,7 +71,7 @@ string[] vendorgstnos;
 // Create Vendor Master
 
 function mk01(string memory _vendorname, string memory _gst, string memory _vendoradd, address _vwallet)
-public returns (bool){
+public returns (uint256){
     
     vendorcode++;
     
@@ -78,8 +79,8 @@ public returns (bool){
     
     vendorgstnos.push(_gst);
     
-    return true;
-    }
+    return vendorcode;
+}
 
 // edit Vendor Master Record
 
@@ -90,7 +91,7 @@ public returns (bool){
     VMR[_gst] = vendorMaster(_vendorname, vendorcode, _gst, _vendoradd, _vwallet);
     
     return true;
-    }
+}
 
 // view Vendor Master Record
 
@@ -98,7 +99,7 @@ function mk03(string memory _gst) public view returns(string memory, uint, strin
     
     return (VMR[_gst].vendorName, VMR[_gst].vendorcode, VMR[_gst].GSTNo, VMR[_gst].vendorAddress, VMR[_gst].vendorWallet);
 
-    }
+}
 
 struct infoRecord {
     uint Price;
@@ -109,7 +110,7 @@ struct infoRecord {
     uint256 ROL; // Re Order Level
     uint24 PaymentTerms; // Payment terms in no. of days
     uint inforecordno;
-    }
+}
 
 uint inforecordno = 1000000; // Info Record No. starting from 1.000.000
 
@@ -120,14 +121,14 @@ mapping (uint => mapping(uint =>infoRecord)) IR;
 // Generate infoRecord
 
 function me11(uint _partno, uint _vendorcode, uint _price, uint _roq, uint _moq, uint _psize, uint16 _lt, uint _rol, uint24 _payment)
-public returns (bool){
+public returns (uint256){
     
     inforecordno++;
     
     IR[_partno][_vendorcode] = infoRecord(_price, _roq, _moq, _psize, _lt, _rol, _payment, inforecordno);
     
-    return true;
-    }
+    return inforecordno;
+}
 
 // edit infoRecord
 
@@ -137,7 +138,7 @@ public returns(bool) {
     IR[_partno][_vendorcode] = infoRecord(_price, _roq, _moq, _psize, _lt, _rol, _payment, inforecordno);
     
     return true;
-    }
+}
  // view infoRecord
  
     function me13(uint _partno, uint _vcode) public view returns (uint, uint, uint, uint, uint16, uint){
@@ -236,6 +237,7 @@ public returns(bool) {
         
     MRPSet[_partno] = MRPData(_cperwk, _cpermth, _cperqtr, _cperyr, _pperwk, _ppermth);
     
+    return true;
     }
     
     // Part No is Assigned a vendor code
@@ -244,6 +246,8 @@ public returns(bool) {
     function fixVendor(uint _partno, uint _vcode) public returns(bool) {
         
         FixedVendor[_partno] = _vcode;
+        
+        return true;
     }
     
     // part no to orderquantity
@@ -276,18 +280,19 @@ public returns(bool) {
     }
     // PO Number to PO struct
     mapping (uint => PO) POrder;
-    uint[] PNumbers;
+    uint[] PONumbers;
     
     function me21n () public returns(uint[] memory) {
         
         for (uint i=0; i<PReq.length; i++){
             POrder[PReq[i]] = PO(ponumber, now, PReq[i], MMR[PReq[i]].partName, PR[PReq[i]], (now + IR[PReq[i]][FixedVendor[PReq[i]]].LT), IR[PReq[i]][FixedVendor[PReq[i]]].Price, IR[PReq[i]][FixedVendor[PReq[i]]].PaymentTerms);
         
-            PNumbers.push(ponumber);
+            PONumbers.push(ponumber);
             ponumber++;
             PReq.pop();
+            
         }
-    return PNumbers;
+    return PONumbers;
     }
     
 }
