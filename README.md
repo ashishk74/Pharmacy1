@@ -50,6 +50,7 @@ counterSale - Sale record punching
 
 viewStock - View stock as per barcode
 
+checkExpiry - View how many stocks are due to expire in given days.
 stockOut - Return stock as zero 
 
 setMRPData - Input historical consumption data and predictable data.
