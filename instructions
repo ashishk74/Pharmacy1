@@ -1,0 +1,23 @@
+To load the program , following steps to be performed:
+
+Run npm install -g ethereumjs-testrpc
+
+Run testrpc
+
+This will give you 10 accounts and their private keys on a test net , replicating an actual blockchain
+
+Create a directory and enter into same.
+
+Copy pharmacy.sol to it and other files.
+
+Run npm init
+
+Run npm install web3 --save or (npm install ethereum/web3.js --save)
+
+Next open sol file in remix IDE and deploy it using Web3 provider environment.
+
+ABI of contract to be copied and pasted in index.html file against var abi = ....
+
+Address of deployed contract to be copied (not address of account) and pasted in index.html file against var address = ...
+
+Run index.html in chrome browser !
